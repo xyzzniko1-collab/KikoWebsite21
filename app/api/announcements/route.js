@@ -1,0 +1,3 @@
+import {NextResponse} from "next/server"; import {db} from "@/lib/db"; import {getSession} from "@/lib/auth";
+export async function GET(){return NextResponse.json(await db.announcement.findMany({orderBy:{createdAt:"desc"},include:{author:{select:{username:true}}}}))}
+export async function POST(req){const s=await getSession();if(!s||s.role!=="OWNER")return NextResponse.json({error:"Owner only"},{status:403});const b=await req.json();if(!b.title||!b.body)return NextResponse.json({error:"Lengkapi data"},{status:400});return NextResponse.json(await db.announcement.create({data:{title:b.title,body:b.body,authorId:s.uid}}),{status:201})}

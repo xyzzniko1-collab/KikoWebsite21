@@ -1,54 +1,24 @@
-# KikoLink Production
+# KikoLink — Vercel Edition
 
-Stack:
-- Node.js + Express
-- PostgreSQL
-- Prisma ORM
-- express-session + PostgreSQL session store
-- bcrypt password hashing
-- Helmet + rate limiting
-- Premium minimalist frontend
+Ini adalah versi yang memang disusun untuk Vercel + PostgreSQL, bukan server Docker yang dipaksa ke Vercel.
 
-## Jalankan lokal
+## Deploy
+1. Push folder ini ke GitHub.
+2. Import repository ke Vercel.
+3. Tambahkan database PostgreSQL. Pilihan yang praktis adalah Prisma Postgres atau Supabase.
+4. Set environment variables:
+   DATABASE_URL
+   AUTH_SECRET
+   OWNER_USERNAME=KikoEnakTau
+   OWNER_PASSWORD=<password owner>
+   DISCORD_URL=https://discord.gg/U6sFp89fFa
+5. Deploy. Build command menjalankan `prisma generate && prisma migrate deploy && next build`.
+6. Setelah database tersedia, seed owner:
+   `npm run db:seed`
+   (bisa dijalankan lokal dengan environment production/DB yang sesuai).
 
-1. Copy `.env.example` menjadi `.env`.
-2. Isi `OWNER_PASSWORD` dengan password owner yang kamu inginkan.
-3. Pastikan PostgreSQL aktif.
-4. Jalankan:
-   npm install
-   npx prisma generate
-   npx prisma migrate deploy
-   npm run seed
-   npm start
-
-Buka http://localhost:3000
-
-## Docker
-
-docker compose up --build
-
-Untuk deployment publik, ganti:
-- SESSION_SECRET
-- password PostgreSQL
-- OWNER_PASSWORD
-- gunakan HTTPS/reverse proxy
-- backup PostgreSQL secara berkala
-
-## Catatan follow/subscribe
-
-`followGate` pada aplikasi ini adalah gate akses setelah login; aplikasi tidak boleh mengklaim user benar-benar follow/subscribe jika belum ada verifikasi dari API platform yang bersangkutan. Untuk verifikasi nyata, tambahkan OAuth/API resmi platform tersebut di backend.
-
-## Struktur
-
-public/
-  index.html
-  styles.css
-  app.js
-prisma/
-  schema.prisma
-  seed.js
-server.js
-Dockerfile
-docker-compose.yml
-.env.example
-package.json
+## Penting
+- Jangan masukkan password owner ke Git.
+- `AUTH_SECRET` harus random dan panjang.
+- Follow/subscribe gate di kode adalah gate akses setelah login; verifikasi follow/subscribe sungguhan membutuhkan API/OAuth platform yang relevan.
+- Untuk database Vercel, Prisma Postgres tersedia sebagai integration resmi; Supabase juga tersedia melalui Vercel Marketplace.

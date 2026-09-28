@@ -1,0 +1,2 @@
+import {NextResponse} from "next/server"; import bcrypt from "bcryptjs"; import {db} from "@/lib/db"; import {setSession} from "@/lib/auth";
+export async function POST(req){const {username,password}=await req.json();const u=await db.user.findUnique({where:{username}});if(!u||!u.active||!(await bcrypt.compare(password||"",u.passwordHash)))return NextResponse.json({error:"Username atau password salah"},{status:401});await setSession(u);return NextResponse.json({user:{username:u.username,role:u.role}})}

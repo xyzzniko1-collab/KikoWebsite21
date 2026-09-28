@@ -1,0 +1,2 @@
+import {NextResponse} from "next/server"; import {db} from "@/lib/db"; import {getSession} from "@/lib/auth";
+export async function GET(){const s=await getSession();if(!s||s.role!=="OWNER")return NextResponse.json({error:"Owner only"},{status:403});return NextResponse.json({members:await db.user.count({where:{role:"MEMBER"}}),links:await db.link.count(),announcements:await db.announcement.count(),messages:await db.message.count()})}

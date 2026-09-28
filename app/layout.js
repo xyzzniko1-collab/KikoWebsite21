@@ -1,0 +1,1 @@
+import "./globals.css"; export const metadata={title:"KikoLink — Resource Hub",description:"KikoLink community resource hub"}; export default function RootLayout({children}){return <html lang="id"><body>{children}</body></html>}
