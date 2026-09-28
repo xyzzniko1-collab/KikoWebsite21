@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  MEMBER
+}
+
+enum Visibility {
+  PUBLIC
+  MEMBER
+  PRIVATE
+}
+
+enum LinkCategory {
+  GTA_MOD
+  GTA_NEEDS
+}
+
+model User {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  passwordHash String
+  role         Role      @default(MEMBER)
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  links        Link[]
+  announcements Announcement[]
+  messages     Message[]
+}
+
+model Link {
+  id          String     @id @default(cuid())
+  title       String
+  url         String
+  visibility  Visibility @default(PUBLIC)
+  category    LinkCategory
+  followGate  Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  createdById String
+  createdBy   User       @relation(fields: [createdById], references: [id], onDelete: Cascade)
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  body      String
+  createdAt DateTime @default(now())
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model DownloadGate {
+  id        String   @id @default(cuid())
+  linkId    String
+  userId    String
+  createdAt DateTime @default(now())
+  link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([linkId, userId])
+}
